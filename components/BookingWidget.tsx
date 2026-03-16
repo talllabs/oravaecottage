@@ -9,6 +9,10 @@ interface BookingWidgetProps {
   compact?: boolean;
 }
 
+function today() {
+  return new Date().toISOString().split("T")[0];
+}
+
 export default function BookingWidget({
   bungalow,
   pricePerNight = "850",
@@ -21,13 +25,26 @@ export default function BookingWidget({
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const handleArrivalChange = (val: string) => {
+    setArrival(val);
+    // Clear departure if it's no longer valid
+    if (departure && val && departure <= val) {
+      setDeparture("");
+    }
+    setError("");
+  };
+
   const handleCheck = () => {
-    if (!arrival || !departure) {
-      setError("Please select both arrival and departure dates.");
+    if (!arrival) {
+      setError("Please select an arrival date.");
       return;
     }
-    if (new Date(departure) <= new Date(arrival)) {
-      setError("Departure date must be after arrival date.");
+    if (!departure) {
+      setError("Please select a departure date.");
+      return;
+    }
+    if (departure <= arrival) {
+      setError("Departure must be after arrival.");
       return;
     }
     setError("");
@@ -43,90 +60,107 @@ export default function BookingWidget({
 
   if (compact) {
     return (
-      <div className="flex flex-wrap items-stretch gap-0 border border-ocean/30">
-        <div className="flex-1 min-w-[160px] border-r border-ocean/30 p-3">
-          <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
-            Arrival Date
-          </p>
-          <div className="relative">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-stretch gap-0 border border-ocean/30">
+          {/* Arrival */}
+          <div className="flex-1 min-w-[160px] border-r border-ocean/30 p-3">
+            <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
+              Arrival Date
+            </p>
             <input
               type="date"
               value={arrival}
-              onChange={(e) => setArrival(e.target.value)}
-              className="w-full font-raleway text-xs text-gray-400 bg-transparent outline-none cursor-pointer"
-              placeholder="Choose Your Date"
+              min={today()}
+              onChange={(e) => handleArrivalChange(e.target.value)}
+              className="w-full font-raleway text-xs text-gray-600 bg-transparent outline-none cursor-pointer"
             />
           </div>
-        </div>
-        <div className="flex-1 min-w-[160px] border-r border-ocean/30 p-3">
-          <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
-            Departure Date
-          </p>
-          <input
-            type="date"
-            value={departure}
-            onChange={(e) => setDeparture(e.target.value)}
-            className="w-full font-raleway text-xs text-gray-400 bg-transparent outline-none cursor-pointer"
-          />
-        </div>
-        <div className="flex border-r border-ocean/30">
-          <div className="p-3 border-r border-ocean/30">
+          {/* Departure */}
+          <div className="flex-1 min-w-[160px] border-r border-ocean/30 p-3">
             <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
-              Adults
+              Departure Date
             </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setAdults(Math.max(1, adults - 1))}
-                className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center"
-              >
-                −
-              </button>
-              <span className="font-raleway text-sm font-semibold w-4 text-center">
-                {adults}
-              </span>
-              <button
-                onClick={() => setAdults(adults + 1)}
-                className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center"
-              >
-                +
-              </button>
+            <input
+              type="date"
+              value={departure}
+              min={arrival || today()}
+              onChange={(e) => {
+                setDeparture(e.target.value);
+                setError("");
+              }}
+              className="w-full font-raleway text-xs text-gray-600 bg-transparent outline-none cursor-pointer"
+            />
+          </div>
+          {/* Adults + Children */}
+          <div className="flex border-r border-ocean/30">
+            <div className="p-3 border-r border-ocean/30">
+              <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
+                Adults
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAdults(Math.max(1, adults - 1))}
+                  className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center hover:text-blue-700"
+                >
+                  −
+                </button>
+                <span className="font-raleway text-sm font-semibold w-4 text-center">
+                  {adults}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAdults(adults + 1)}
+                  className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center hover:text-blue-700"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="p-3">
+              <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
+                Children
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setChildren(Math.max(0, children - 1))}
+                  className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center hover:text-blue-700"
+                >
+                  −
+                </button>
+                <span className="font-raleway text-sm font-semibold w-4 text-center">
+                  {children}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setChildren(children + 1)}
+                  className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center hover:text-blue-700"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
-          <div className="p-3">
-            <p className="font-raleway text-ocean text-[10px] font-bold tracking-widest uppercase mb-1">
-              Children
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setChildren(Math.max(0, children - 1))}
-                className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center"
-              >
-                −
-              </button>
-              <span className="font-raleway text-sm font-semibold w-4 text-center">
-                {children}
-              </span>
-              <button
-                onClick={() => setChildren(children + 1)}
-                className="text-ocean font-bold text-sm w-5 h-5 flex items-center justify-center"
-              >
-                +
-              </button>
-            </div>
-          </div>
+          {/* CTA */}
+          <button
+            type="button"
+            onClick={handleCheck}
+            className="bg-ocean text-white font-raleway text-xs font-bold tracking-widest uppercase px-6 py-3 hover:bg-blue-600 transition-colors whitespace-nowrap"
+          >
+            Check
+            <br />
+            Availability
+          </button>
         </div>
-        <button
-          onClick={handleCheck}
-          className="bg-ocean text-white font-raleway text-xs font-bold tracking-widest uppercase px-6 py-3 hover:bg-blue-600 transition-colors"
-        >
-          Check
-          <br />
-          Availability
-        </button>
+        {error && (
+          <p className="font-raleway text-red-500 text-xs pl-1">{error}</p>
+        )}
       </div>
     );
   }
 
+  // Full widget (bungalow pages)
   return (
     <div className="bg-skyblue p-6 rounded-sm">
       {pricePerNight && (
@@ -145,53 +179,28 @@ export default function BookingWidget({
           <label className="font-raleway text-ocean text-xs font-bold tracking-widest uppercase block mb-1">
             Arrival Date
           </label>
-          <div className="relative border border-ocean/30 bg-white">
-            <input
-              type="date"
-              value={arrival}
-              onChange={(e) => setArrival(e.target.value)}
-              className="w-full p-3 font-raleway text-sm text-gray-600 bg-transparent outline-none cursor-pointer"
-            />
-            <svg
-              className="absolute right-3 top-3 w-5 h-5 text-ocean pointer-events-none"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
+          <input
+            type="date"
+            value={arrival}
+            min={today()}
+            onChange={(e) => handleArrivalChange(e.target.value)}
+            className="w-full border border-ocean/30 bg-white p-3 font-raleway text-sm text-gray-600 outline-none focus:border-ocean transition-colors cursor-pointer"
+          />
         </div>
         <div>
           <label className="font-raleway text-ocean text-xs font-bold tracking-widest uppercase block mb-1">
             Departure Date
           </label>
-          <div className="relative border border-ocean/30 bg-white">
-            <input
-              type="date"
-              value={departure}
-              onChange={(e) => setDeparture(e.target.value)}
-              className="w-full p-3 font-raleway text-sm text-gray-600 bg-transparent outline-none cursor-pointer"
-            />
-            <svg
-              className="absolute right-3 top-3 w-5 h-5 text-ocean pointer-events-none"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
+          <input
+            type="date"
+            value={departure}
+            min={arrival || today()}
+            onChange={(e) => {
+              setDeparture(e.target.value);
+              setError("");
+            }}
+            className="w-full border border-ocean/30 bg-white p-3 font-raleway text-sm text-gray-600 outline-none focus:border-ocean transition-colors cursor-pointer"
+          />
         </div>
         <div className="flex gap-4">
           <div className="flex-1">
@@ -200,6 +209,7 @@ export default function BookingWidget({
             </label>
             <div className="flex items-center border border-ocean/30 bg-white">
               <button
+                type="button"
                 onClick={() => setAdults(Math.max(1, adults - 1))}
                 className="px-3 py-3 text-ocean hover:bg-ocean/10 transition-colors font-bold"
               >
@@ -209,6 +219,7 @@ export default function BookingWidget({
                 {adults}
               </span>
               <button
+                type="button"
                 onClick={() => setAdults(adults + 1)}
                 className="px-3 py-3 text-ocean hover:bg-ocean/10 transition-colors font-bold"
               >
@@ -222,6 +233,7 @@ export default function BookingWidget({
             </label>
             <div className="flex items-center border border-ocean/30 bg-white">
               <button
+                type="button"
                 onClick={() => setChildren(Math.max(0, children - 1))}
                 className="px-3 py-3 text-ocean hover:bg-ocean/10 transition-colors font-bold"
               >
@@ -231,6 +243,7 @@ export default function BookingWidget({
                 {children}
               </span>
               <button
+                type="button"
                 onClick={() => setChildren(children + 1)}
                 className="px-3 py-3 text-ocean hover:bg-ocean/10 transition-colors font-bold"
               >
@@ -240,6 +253,7 @@ export default function BookingWidget({
           </div>
         </div>
         <button
+          type="button"
           onClick={handleCheck}
           className="w-full bg-ocean text-white font-raleway text-xs font-bold tracking-widest uppercase py-4 hover:bg-blue-600 transition-colors duration-200"
         >

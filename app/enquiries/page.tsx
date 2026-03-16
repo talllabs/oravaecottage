@@ -6,6 +6,10 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+function today() {
+  return new Date().toISOString().split("T")[0];
+}
+
 function EnquiryForm() {
   const searchParams = useSearchParams();
 
@@ -158,59 +162,36 @@ function EnquiryForm() {
             <label className="font-raleway text-ocean text-xs font-bold tracking-widest uppercase block mb-2">
               Arrival Date
             </label>
-            <div className="relative border border-ocean/30 bg-white">
-              <input
-                type="date"
-                value={form.arrival}
-                onChange={(e) =>
-                  setForm({ ...form, arrival: e.target.value })
-                }
-                className="w-full p-3 font-raleway text-sm text-gray-600 bg-transparent outline-none cursor-pointer pr-10"
-                placeholder="Choose Your Date"
-              />
-              <svg
-                className="absolute right-3 top-3 w-5 h-5 text-ocean pointer-events-none"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+            <input
+              type="date"
+              value={form.arrival}
+              min={today()}
+              onChange={(e) => {
+                const val = e.target.value;
+                setForm((prev) => ({
+                  ...prev,
+                  arrival: val,
+                  // clear departure if now invalid
+                  departure: prev.departure && prev.departure <= val ? "" : prev.departure,
+                }));
+              }}
+              className="w-full border border-ocean/30 bg-white p-3 font-raleway text-sm text-gray-600 outline-none focus:border-ocean transition-colors cursor-pointer"
+            />
           </div>
 
           <div className="mb-4">
             <label className="font-raleway text-ocean text-xs font-bold tracking-widest uppercase block mb-2">
               Departure Date
             </label>
-            <div className="relative border border-ocean/30 bg-white">
-              <input
-                type="date"
-                value={form.departure}
-                onChange={(e) =>
-                  setForm({ ...form, departure: e.target.value })
-                }
-                className="w-full p-3 font-raleway text-sm text-gray-600 bg-transparent outline-none cursor-pointer pr-10"
-              />
-              <svg
-                className="absolute right-3 top-3 w-5 h-5 text-ocean pointer-events-none"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+            <input
+              type="date"
+              value={form.departure}
+              min={form.arrival || today()}
+              onChange={(e) =>
+                setForm({ ...form, departure: e.target.value })
+              }
+              className="w-full border border-ocean/30 bg-white p-3 font-raleway text-sm text-gray-600 outline-none focus:border-ocean transition-colors cursor-pointer"
+            />
             {errors.departure && (
               <p className="text-red-500 text-xs mt-1">{errors.departure}</p>
             )}
