@@ -48,15 +48,7 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy/50" />
 
-        <div className="relative z-10 text-center px-4 flex flex-col items-center">
-          <Image
-            src="/images/logo-removebg-preview.png"
-            alt="Oravae Island Bungalows"
-            width={340}
-            height={160}
-            className="drop-shadow-lg mb-4"
-            priority
-          />
+        <div className="relative z-10 text-center px-4">
           <p className="font-raleway text-white/90 text-sm sm:text-base tracking-[0.3em] uppercase drop-shadow">
             Escape to Your Own Pacific Island
           </p>
