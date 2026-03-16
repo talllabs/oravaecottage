@@ -113,11 +113,10 @@ export default function HomePage() {
       {/* Video placeholder */}
       <section className="relative h-[420px] sm:h-[520px] overflow-hidden group cursor-pointer">
         <Image
-          src="https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=1920&q=80"
-          alt="Snorkelling in the lagoon"
+          src="/images/videoplaceholder.png"
+          alt="Oravae Island video"
           fill
           className="object-cover object-center"
-          unoptimized
         />
         <div className="absolute inset-0 bg-navy/50 group-hover:bg-navy/40 transition-colors duration-300" />
         <div className="absolute inset-0 flex items-center justify-center">
