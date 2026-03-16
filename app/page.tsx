@@ -48,11 +48,6 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy/50" />
 
-        <div className="relative z-10 text-center px-4">
-          <p className="font-raleway text-white/90 text-sm sm:text-base tracking-[0.3em] uppercase drop-shadow">
-            Escape to Your Own Pacific Island
-          </p>
-        </div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
