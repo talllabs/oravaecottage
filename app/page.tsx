@@ -12,8 +12,7 @@ const bungalows = [
     name: "The Cottage",
     slug: "the-cottage",
     tagline: "Overwater paradise for up to 6",
-    image:
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
+    image: "/images/cottage.png",
     href: "/bungalows#cottage",
   },
   {
@@ -28,8 +27,7 @@ const bungalows = [
     name: "The Treehouse",
     slug: "the-treehouse",
     tagline: "Canopy retreat among the palms",
-    image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800&q=80",
+    image: "/images/treehouse.png",
     href: "/bungalows#treehouse",
   },
 ];
@@ -42,22 +40,23 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative h-screen min-h-[600px] flex flex-col items-center justify-center overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80"
+          src="/images/hero.png"
           alt="Aerial view of Oravae Island"
           fill
           className="object-cover object-center"
           priority
-          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy/50" />
 
-        <div className="relative z-10 text-center px-4">
-          <h1 className="font-playfair text-white text-6xl sm:text-7xl lg:text-8xl font-bold mb-3 drop-shadow-lg">
-            Oravae
-          </h1>
-          <p className="font-playfair text-white text-xl sm:text-2xl mb-4 drop-shadow-md italic">
-            Island Bungalows
-          </p>
+        <div className="relative z-10 text-center px-4 flex flex-col items-center">
+          <Image
+            src="/images/logo-removebg-preview.png"
+            alt="Oravae Island Bungalows"
+            width={340}
+            height={160}
+            className="drop-shadow-lg mb-4"
+            priority
+          />
           <p className="font-raleway text-white/90 text-sm sm:text-base tracking-[0.3em] uppercase drop-shadow">
             Escape to Your Own Pacific Island
           </p>

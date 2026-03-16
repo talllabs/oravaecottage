@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
@@ -45,12 +46,13 @@ export default function Navbar({ transparent = false }: NavbarProps) {
           {/* Logo — left on inner pages, hidden on home (centred logo in hero) */}
           {!isHome && (
             <Link href="/" className="flex-shrink-0">
-              <span className="font-playfair text-white text-2xl font-bold tracking-wide">
-                Oravae
-              </span>
-              <span className="block text-ocean text-xs font-raleway tracking-widest uppercase">
-                Island Bungalows
-              </span>
+              <Image
+                src="/images/logo-removebg-preview.png"
+                alt="Oravae Island Bungalows"
+                width={120}
+                height={55}
+                className="h-12 w-auto"
+              />
             </Link>
           )}
 
